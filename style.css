@@ -700,119 +700,213 @@ nav {
   position: relative;
   height: 100%;
   z-index: 2;
+  perspective: 1200px;
 }
 
-.visual-sphere {
+/* ==========================================================================
+   3D Rotating Hexagon
+   ========================================================================== */
+.hexagon-container {
+  position: relative;
+  width: 360px;
+  height: 360px;
+  perspective: 1200px;
+}
+
+.hexagon-cube {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: rotateCube 15s infinite linear;
+}
+
+@keyframes rotateCube {
+  0% {
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+  }
+}
+
+/* Hexagon Faces */
+.hexagon-face {
   position: absolute;
   width: 280px;
   height: 280px;
-  background: var(--grad-liquid);
-  border-radius: 40% 60% 70% 30% / 40% 40% 60% 60%;
-  filter: blur(10px);
-  opacity: 0.7;
-  animation: heroSphere 15s infinite alternate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  left: 40px;
+  top: 40px;
+  transform-style: preserve-3d;
+  transition: all 0.4s ease;
+}
+
+.hexagon-face:hover {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 40px rgba(56, 189, 248, 0.4), inset 0 0 30px rgba(56, 189, 248, 0.1);
+  transform: scale(1.05);
+}
+
+/* Face positions in 3D space */
+.face-1 {
+  transform: translateZ(140px);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(56, 189, 248, 0.05));
+}
+
+.face-2 {
+  transform: rotateY(60deg) translateZ(140px);
+  background: linear-gradient(135deg, rgba(192, 132, 252, 0.1), rgba(192, 132, 252, 0.05));
+}
+
+.face-3 {
+  transform: rotateY(120deg) translateZ(140px);
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.1), rgba(251, 146, 60, 0.05));
+}
+
+.face-4 {
+  transform: rotateY(180deg) translateZ(140px);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+}
+
+.face-5 {
+  transform: rotateY(240deg) translateZ(140px);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(168, 85, 247, 0.05));
+}
+
+.face-6 {
+  transform: rotateY(300deg) translateZ(140px);
+  background: linear-gradient(135deg, rgba(244, 114, 182, 0.1), rgba(244, 114, 182, 0.05));
+}
+
+/* Face Content */
+.face-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
   z-index: 1;
 }
 
-@keyframes heroSphere {
-  0% {
-    border-radius: 40% 60% 70% 30% / 40% 40% 60% 60%;
-    transform: rotate(0deg) scale(1);
-  }
+.hexagon-face i {
+  font-size: 3rem;
+  background: var(--grad-liquid);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: iconFloat 3s ease-in-out infinite;
+}
 
+@keyframes iconFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
   50% {
-    border-radius: 70% 30% 50% 50% / 50% 70% 30% 50%;
-    transform: rotate(180deg) scale(1.1);
-  }
-
-  100% {
-    border-radius: 40% 60% 70% 30% / 40% 40% 60% 60%;
-    transform: rotate(360deg) scale(1);
+    transform: translateY(-10px);
   }
 }
 
-.visual-glass-card {
-  width: 320px;
-  padding: 30px;
-  position: relative;
-  z-index: 2;
-  box-shadow: var(--glass-shadow);
-  border: 1px solid var(--glass-border);
-  transform: rotate(-3deg) translateY(0);
-  animation: visualCardFloat 6s ease-in-out infinite alternate;
+.hexagon-face h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  background: var(--grad-liquid);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
 }
 
-@keyframes visualCardFloat {
-  0% {
-    transform: translateY(-10px) rotate(-3deg);
-  }
-
-  100% {
-    transform: translateY(15px) rotate(1deg);
-  }
-}
-
-.visual-glass-card .card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-}
-
-.card-header .dots {
-  display: flex;
-  gap: 6px;
-}
-
-.card-header .dots span {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.card-header .dots span:nth-child(1) {
-  background-color: var(--accent-rose);
-}
-
-.card-header .dots span:nth-child(2) {
-  background-color: var(--accent-peach);
-}
-
-.card-header .dots span:nth-child(3) {
-  background-color: var(--accent-cyan);
-}
-
-.visual-glass-card h3 {
-  font-size: 1.4rem;
-  margin-bottom: 10px;
-}
-
-.visual-glass-card .skill-row {
-  margin-top: 15px;
-}
-
-.visual-glass-card .skill-label {
-  display: flex;
-  justify-content: space-between;
+.hexagon-face p {
   font-size: 0.85rem;
   color: #94a3b8;
-  margin-bottom: 6px;
+  margin: 0;
+  letter-spacing: 0.5px;
 }
 
-.visual-glass-card .progress-bar-bg {
-  width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  overflow: hidden;
+/* Decorative Rotating Rings */
+.hexagon-rings {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 360px;
+  height: 360px;
+  pointer-events: none;
 }
 
-.visual-glass-card .progress-bar-fill {
-  height: 100%;
-  border-radius: 10px;
-  background: var(--grad-primary);
-  width: 0%;
-  transition: width 1.5s cubic-bezier(0.1, 0.8, 0.3, 1);
+.ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px solid;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ring-1 {
+  width: 200px;
+  height: 200px;
+  border-color: rgba(56, 189, 248, 0.2);
+  animation: rotateRing 20s linear infinite;
+}
+
+.ring-2 {
+  width: 280px;
+  height: 280px;
+  border-color: rgba(192, 132, 252, 0.2);
+  animation: rotateRing 25s linear infinite reverse;
+}
+
+.ring-3 {
+  width: 360px;
+  height: 360px;
+  border-color: rgba(251, 146, 60, 0.2);
+  animation: rotateRing 30s linear infinite;
+}
+
+@keyframes rotateRing {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* Glow effect overlay for hexagon */
+.hexagon-cube::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.3), transparent);
+  border-radius: 50%;
+  filter: blur(30px);
+  pointer-events: none;
+  animation: glowPulse 4s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
 }
 
 .scroll-indicator {
