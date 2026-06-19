@@ -96,6 +96,8 @@ const PROJECTS = {
 };
 
 const CONTACT_EMAIL = 'deharkarkunal48@gmail.com';
+// Replace with your deployed Google Apps Script web app URL after deploying the script below
+const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzN74WZLgONf0tZ97vYwTmyHq8_y_yKSR6GgmGnt21AG8vO4DzI7k-0sCK55MDJH5qZkg/exec';
 
 document.addEventListener('DOMContentLoaded', () => {
   initCustomCursor();
@@ -395,13 +397,41 @@ function initScrollReveal() {
 /* ==========================================================================
    9. Contact Form
    ========================================================================== */
+// Simple rate limiter: allow 1 submit per 5 seconds
+let lastSubmitTime = 0;
+
 function initContactForm() {
   const form = document.getElementById('portfolio-contact-form');
   const statusMessage = document.getElementById('form-status-message');
   if (!form || !statusMessage) return;
 
-  form.addEventListener('submit', (e) => {
+  // Add honeypot field (hidden from users, spam bots fill it)
+  const honeypot = document.createElement('input');
+  honeypot.type = 'text';
+  honeypot.name = 'website';
+  honeypot.style.position = 'absolute';
+  honeypot.style.left = '-9999px';
+  honeypot.setAttribute('tabindex', '-1');
+  honeypot.setAttribute('autocomplete', 'off');
+  form.appendChild(honeypot);
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    // Check honeypot — if filled, it's likely a bot
+    if (honeypot.value) {
+      console.warn('Honeypot triggered: spam form submission blocked');
+      showFormStatus(statusMessage, 'Submission blocked. Please try again.', 'error');
+      return;
+    }
+
+    // Rate limit: prevent rapid submissions
+    const now = Date.now();
+    if (now - lastSubmitTime < 5000) {
+      showFormStatus(statusMessage, 'Please wait a moment before sending again.', 'error');
+      return;
+    }
+    lastSubmitTime = now;
 
     const name = form.querySelector('#name').value.trim();
     const email = form.querySelector('#email').value.trim();
@@ -418,11 +448,29 @@ function initContactForm() {
       return;
     }
 
-    const mailBody = `Name: ${name}\nEmail: ${email}\n\n${message}`;
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(mailBody)}`;
+    const payload = {
+      name,
+      email,
+      subject,
+      message,
+      timestamp: new Date().toISOString()
+    };
 
-    showFormStatus(statusMessage, 'Your email client is opening — send the message from there.', 'success');
-    form.reset();
+    try {
+      showFormStatus(statusMessage, 'Sending...', '');
+
+      const resp = await fetch(SHEET_ENDPOINT, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify(payload)
+      });
+
+      showFormStatus(statusMessage, 'Message sent successfully!', 'success');
+      form.reset();
+    } catch (err) {
+      console.error('Contact form submit error:', err);
+      showFormStatus(statusMessage, 'Failed to send message. Try again later.', 'error');
+    }
 
     setTimeout(() => {
       statusMessage.style.display = 'none';
