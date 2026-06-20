@@ -20,9 +20,15 @@
 
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Three.js for Glassmorphism WebGL -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 
 <body>
+
+  <!-- WebGL Glassmorphism Canvas -->
+  <canvas id="webgl-canvas"></canvas>
 
   <!-- Custom Liquid Cursor -->
   <div id="custom-cursor"></div>
@@ -47,6 +53,7 @@
 
     <nav>
       <ul class="nav-links">
+        <div class="nav-indicator" id="nav-indicator"></div>
         <li><a href="#hero" class="active">Home</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#skills">Skills</a></li>
@@ -162,12 +169,6 @@
         </div>
       </div>
 
-      <div class="scroll-indicator">
-        <span>Scroll Down</span>
-        <div class="mouse-icon">
-          <div class="mouse-wheel"></div>
-        </div>
-      </div>
     </section>
 
     <!-- About Section -->
@@ -851,6 +852,7 @@
 
   <!-- JS Interactions Script -->
   <script src="script.js"></script>
+  <script src="glassmorphism.js"></script>
 </body>
 
 </html>

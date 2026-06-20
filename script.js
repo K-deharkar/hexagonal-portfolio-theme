@@ -221,6 +221,12 @@ function initNavbarScroll() {
     header.classList.toggle('scrolled', window.scrollY > 50);
     highlightActiveNavLink();
   });
+
+  // Call once on load
+  highlightActiveNavLink();
+  
+  // Also call on window resize to fix indicator position
+  window.addEventListener('resize', highlightActiveNavLink);
 }
 
 function highlightActiveNavLink() {
@@ -237,6 +243,27 @@ function highlightActiveNavLink() {
   navLinks.forEach(link => {
     link.classList.toggle('active', link.getAttribute('href') === `#${currentSection}`);
   });
+
+  updateNavIndicator();
+}
+
+function updateNavIndicator() {
+  const activeLink = document.querySelector('.nav-links a.active');
+  const indicator = document.getElementById('nav-indicator');
+  const navLinksContainer = document.querySelector('.nav-links');
+  
+  if (activeLink && indicator && navLinksContainer) {
+    const linkRect = activeLink.getBoundingClientRect();
+    const containerRect = navLinksContainer.getBoundingClientRect();
+    
+    const left = linkRect.left - containerRect.left;
+    
+    indicator.style.width = `${linkRect.width}px`;
+    indicator.style.left = `${left}px`;
+    indicator.style.opacity = '1';
+  } else if (indicator) {
+    indicator.style.opacity = '0';
+  }
 }
 
 /* ==========================================================================
